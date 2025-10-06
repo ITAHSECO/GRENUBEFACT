@@ -10,7 +10,8 @@ const getEnvConfig = () => {
   const config = {
     ruta: process.env[`NUBEFACT_${envPrefix}_RUTA`],
     token: process.env[`NUBEFACT_${envPrefix}_TOKEN`],
-    isProduction
+    isProduction,
+    greJsonOutputDir: process.env.GRE_JSON_OUTPUT_DIR || './output/gre'
   };
 console.log("CONFIG: ",config);
 
