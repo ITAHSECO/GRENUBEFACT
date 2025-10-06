@@ -6,7 +6,7 @@ const POLL_INTERVAL_MS = 10000; // 10 segundos
 const sendGre = async (greData, { ruta, token }) => {
   const payload = {
     ...greData,
-    operacion: 'generar_guia'
+   // operacion: 'generar_guia'
   };
 
   const response = await axios.post(ruta, payload, {

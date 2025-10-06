@@ -3,7 +3,7 @@ const { getEnvConfig } = require('../config/envConfig');
 
 const generateGre = async (req, res) => {
   const greData = req.body;
-
+console.log(req.body);
   // Validar campos requeridos
   if (!greData.tipo_de_comprobante || !greData.serie || !greData.numero) {
     return res.status(400).json({

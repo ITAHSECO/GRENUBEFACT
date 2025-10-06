@@ -3,7 +3,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const getEnvConfig = () => {
-  const isProduction = process.env.NODE_ENV === 'production';
+  const isProduction = process.env.NODE_ENV === 'test';
+  console.log(isProduction);
   const envPrefix = isProduction ? 'PROD' : 'TEST';
 
   const config = {
@@ -11,6 +12,7 @@ const getEnvConfig = () => {
     token: process.env[`NUBEFACT_${envPrefix}_TOKEN`],
     isProduction
   };
+console.log("CONFIG: ",config);
 
   if (!config.ruta || !config.token) {
     throw new Error(`Faltan variables de entorno: NUBEFACT_${envPrefix}_RUTA y NUBEFACT_${envPrefix}_TOKEN`);
