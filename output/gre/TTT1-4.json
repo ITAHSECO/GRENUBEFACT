@@ -56,28 +56,4 @@
       "numero": "1"
     }
   ]
-  ,
-	"vehiculos_secundarios": [
-		{
-			"placa_numero": "ABC445"		},
-		{
-			"placa_numero": "ABC446"		}
-	],
-  "conductores_secundarios":[
-		{
-		        "documento_tipo": "1",
-	                "documento_numero": "06123457",
-	                "nombre": "LUIS",
-	                "apellidos": "FERNANDEZ",
-	                "numero_licencia": "QXXXXXXXZ"		
-	  },{
-	 	        "documento_tipo": "1",
-	                "documento_numero": "06123458",
-	                "nombre": "JORGE",
-	                "apellidos": "QUISPE",
-	                "numero_licencia": "QXXXXXXAZ"		
-	  }
-	]
-
-
 }

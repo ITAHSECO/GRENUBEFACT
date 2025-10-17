@@ -1,23 +1,38 @@
-const { sendGre, pollGreStatus } = require('../services/nubefactService');
+const { sendGre, pollGreStatus, consultGre } = require('../services/nubefactService');
 const { buildGreJson } = require('../services/greBuilderService');
 const { getEnvConfig } = require('../config/envConfig');
 const fs = require('fs').promises;
 const path = require('path');
 
 const generateGre = async (req, res) => {
-  const inputData = req.body;
+  const { serie, numero } = req.body;
+
+  if (!serie || !numero) {
+    return res.status(400).json({
+      error: 'Faltan campos requeridos',
+      details: 'Se requieren los campos serie y numero'
+    });
+  }
 
   try {
-    // Construir el JSON de la GRE usando el servicio
-    const greData = buildGreJson(inputData);
-
     const config = getEnvConfig();
+    const outputDir = config.greJsonOutputDir;
 
-    // Paso 1: Enviar GRE
-    const initialResponse = await sendGre(greData, config);
+    const fileName = `${serie}-${numero}.json`;
+    const filePath = path.join(outputDir, fileName);
 
-    // Paso 2: Consultar estado
-    const finalResponse = await pollGreStatus(greData, config);
+    let greData;
+    try {
+      const fileContent = await fs.readFile(filePath, 'utf8');
+      greData = JSON.parse(fileContent);
+    } catch (error) {
+      throw new Error(`No se pudo leer el archivo ${filePath}: ${error.message}`);
+    }
+
+    const validatedGreData = buildGreJson(greData);
+
+    const initialResponse = await sendGre(validatedGreData, config);
+    const finalResponse = await pollGreStatus(validatedGreData, config);
 
     return res.status(200).json({
       message: `GRE aceptada por SUNAT (${config.isProduction ? 'producción' : 'pruebas'})`,
@@ -34,24 +49,18 @@ const generateGre = async (req, res) => {
 };
 
 const generateGreJson = async (req, res) => {
-  const inputData = req.body;
-
+  const inputData = req.body || {};
+console.log('>>> ',JSON.stringify(req.body));
   try {
-    // Generar el JSON de la GRE usando el servicio
     const greJson = buildGreJson(inputData);
-
-    // Obtener la carpeta de destino desde la configuración
     const config = getEnvConfig();
     const outputDir = config.greJsonOutputDir;
 
-    // Crear la carpeta si no existe
     await fs.mkdir(outputDir, { recursive: true });
 
-    // Generar el nombre del archivo (serie-numero.json)
     const fileName = `${greJson.serie}-${greJson.numero}.json`;
     const filePath = path.join(outputDir, fileName);
 
-    // Guardar el JSON en el archivo
     await fs.writeFile(filePath, JSON.stringify(greJson, null, 2));
 
     return res.status(200).json({
@@ -67,4 +76,37 @@ const generateGreJson = async (req, res) => {
   }
 };
 
-module.exports = { generateGre, generateGreJson };
+const consultarGre = async (req, res) => {
+  const { serie, numero } = req.body;
+
+  if (!serie || !numero) {
+    return res.status(400).json({
+      error: 'Faltan campos requeridos',
+      details: 'Se requieren los campos serie y numero'
+    });
+  }
+
+  try {
+    const config = getEnvConfig();
+    const greData = {
+      tipo_de_comprobante: 7,
+      serie,
+      numero
+    };
+
+    const response = await consultGre(greData, config);
+
+    return res.status(200).json({
+      message: 'Consulta de GRE exitosa',
+      data: response
+    });
+  } catch (error) {
+    console.error('Error en consultGre:', error.message);
+    return res.status(error.message.includes('SUNAT') ? 400 : 500).json({
+      error: 'Error consultando la GRE',
+      details: error.message
+    });
+  }
+};
+
+module.exports = { generateGre, generateGreJson, consultarGre };

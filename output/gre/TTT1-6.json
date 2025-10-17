@@ -2,7 +2,7 @@
   "operacion": "generar_guia",
   "tipo_de_comprobante": 7,
   "serie": "TTT1",
-  "numero": 4,
+  "numero": 6,
   "cliente_tipo_de_documento": 6,
   "cliente_numero_de_documento": "20600695771",
   "cliente_denominacion": "NUBEFACT SA",
@@ -10,14 +10,13 @@
   "cliente_email": "demo@gmail.com",
   "cliente_email_1": "",
   "cliente_email_2": "",
-  "fecha_de_emision": "2025-10-06",
-  "observaciones": "Prueba de GRE desde CMD",
+  "fecha_de_emision": "2025-10-17",
   "motivo_de_traslado": "01",
   "peso_bruto_total": "1",
   "peso_bruto_unidad_de_medida": "KGM",
   "numero_de_bultos": "1",
   "tipo_de_transporte": "01",
-  "fecha_de_inicio_de_traslado": "2025-10-07",
+  "fecha_de_inicio_de_traslado": "2025-10-17",
   "transportista_documento_tipo": "6",
   "transportista_documento_numero": "20600695771",
   "transportista_denominacion": "NUBEFACT SA",
@@ -25,7 +24,7 @@
   "conductor_documento_tipo": "1",
   "conductor_documento_numero": "12345678",
   "conductor_nombre": "JORGE",
-  "conductor_apellidos": "LOPEZ",
+  "conductor_documento_apellidos": "LOPEZ",
   "conductor_numero_licencia": "Q12345678",
   "punto_de_partida_ubigeo": "150115",
   "punto_de_partida_direccion": "AV. PRINCIPAL 123, MIRAFLORES",
@@ -33,8 +32,6 @@
   "punto_de_llegada_ubigeo": "130101",
   "punto_de_llegada_direccion": "CALLE SECUNDARIA 456, CALLAO",
   "punto_de_llegada_codigo_establecimiento_sunat": "0000",
-  "enviar_automaticamente_al_cliente": false,
-  "formato_de_pdf": "",
   "items": [
     {
       "unidad_de_medida": "NIU",
@@ -49,6 +46,9 @@
       "cantidad": "2"
     }
   ],
+  "observaciones": "Prueba de GRE desde CMD",
+  "enviar_automaticamente_al_cliente": false,
+  "formato_de_pdf": "",
   "documento_relacionado": [
     {
       "tipo": "01",
@@ -56,28 +56,4 @@
       "numero": "1"
     }
   ]
-  ,
-	"vehiculos_secundarios": [
-		{
-			"placa_numero": "ABC445"		},
-		{
-			"placa_numero": "ABC446"		}
-	],
-  "conductores_secundarios":[
-		{
-		        "documento_tipo": "1",
-	                "documento_numero": "06123457",
-	                "nombre": "LUIS",
-	                "apellidos": "FERNANDEZ",
-	                "numero_licencia": "QXXXXXXXZ"		
-	  },{
-	 	        "documento_tipo": "1",
-	                "documento_numero": "06123458",
-	                "nombre": "JORGE",
-	                "apellidos": "QUISPE",
-	                "numero_licencia": "QXXXXXXAZ"		
-	  }
-	]
-
-
 }

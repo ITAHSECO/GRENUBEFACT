@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario GRE</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .form-section { margin-bottom: 1.5rem; }
+    .nested-section { margin-left: 1.5rem; border-left: 2px solid #dee2e6; padding-left: 1rem; }
+    .item-section, .doc-section, .vehiculo-section, .conductor-secundario-section { margin-bottom: 1rem; border: 1px solid #dee2e6; padding: 1rem; border-radius: 0.25rem; }
+    .remove-btn { margin-top: 0.5rem; }
+    #responseModal .modal-body pre { max-height: 400px; overflow-y: auto; }
+    #responseModal .pdf-link { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <h1 class="mb-4">Formulario Guía de Remisión Electrónica (GRE)</h1>
+    <form id="greForm" class="needs-validation" novalidate>
+      <!-- Top-level fields -->
+      <div class="form-section">
+        <h4>Datos Generales</h4>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="operacion" class="form-label">Operación</label>
+            <input type="text" class="form-control" id="operacion" value="generar_guia" required readonly>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="tipo_de_comprobante" class="form-label">Tipo de Comprobante</label>
+            <input type="number" class="form-control" id="tipo_de_comprobante" value="7" required readonly>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="serie" class="form-label">Serie</label>
+            <input type="text" class="form-control" id="serie" value="TTT1" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="numero" class="form-label">Número</label>
+            <input type="number" class="form-control" id="numero" value="4" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="fecha_de_emision" class="form-label">Fecha de Emisión</label>
+            <input type="date" class="form-control" id="fecha_de_emision" value="2025-10-06" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="fecha_de_inicio_de_traslado" class="form-label">Fecha de Inicio de Traslado</label>
+            <input type="date" class="form-control" id="fecha_de_inicio_de_traslado" value="2025-10-07" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="motivo_de_traslado" class="form-label">Motivo de Traslado</label>
+            <select class="form-select" id="motivo_de_traslado" required>
+              <option value="01" selected>Venta</option>
+              <option value="02">Compra</option>
+              <option value="03">Traslado entre establecimientos</option>
+              <option value="04">Traslado a zona primaria</option>
+              <option value="05">Exportación</option>
+              <option value="06">Importación</option>
+              <option value="07">Consignación</option>
+              <option value="08">Devolución</option>
+              <option value="09">Otros</option>
+              <option value="13">Venta sujeta a confirmación</option>
+              <option value="14">Traslado emisor itinerante</option>
+            </select>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="tipo_de_transporte" class="form-label">Tipo de Transporte</label>
+            <select class="form-select" id="tipo_de_transporte" required>
+              <option value="01" selected>Privado</option>
+              <option value="02">Público</option>
+            </select>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="peso_bruto_total" class="form-label">Peso Bruto Total</label>
+            <input type="text" class="form-control" id="peso_bruto_total" value="1" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="peso_bruto_unidad_de_medida" class="form-label">Unidad de Medida Peso</label>
+            <input type="text" class="form-control" id="peso_bruto_unidad_de_medida" value="KGM" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="numero_de_bultos" class="form-label">Número de Bultos</label>
+            <input type="text" class="form-control" id="numero_de_bultos" value="1" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="enviar_automaticamente_al_cliente" class="form-label">Enviar Automáticamente al Cliente</label>
+            <select class="form-select" id="enviar_automaticamente_al_cliente">
+              <option value="false" selected>No</option>
+              <option value="true">Sí</option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="formato_de_pdf" class="form-label">Formato de PDF</label>
+            <input type="text" class="form-control" id="formato_de_pdf" value="">
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="observaciones" class="form-label">Observaciones</label>
+          <textarea class="form-control" id="observaciones">Prueba de GRE desde CMD</textarea>
+        </div>
+      </div>
+
+      <!-- Cliente -->
+      <div class="form-section nested-section">
+        <h5>Cliente</h5>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="cliente_tipo_de_documento" class="form-label">Tipo de Documento</label>
+            <input type="number" class="form-control" id="cliente_tipo_de_documento" value="6" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="cliente_numero_de_documento" class="form-label">Número de Documento</label>
+            <input type="text" class="form-control" id="cliente_numero_de_documento" value="20600695771" required pattern="\d{11}">
+            <div class="invalid-feedback">Debe ser un RUC válido de 11 dígitos.</div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="cliente_denominacion" class="form-label">Denominación</label>
+            <input type="text" class="form-control" id="cliente_denominacion" value="NUBEFACT SA" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="cliente_direccion" class="form-label">Dirección</label>
+          <input type="text" class="form-control" id="cliente_direccion" value="MIRAFLORES LIMA">
+        </div>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="cliente_email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="cliente_email" value="demo@gmail.com">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="cliente_email_1" class="form-label">Email 1</label>
+            <input type="email" class="form-control" id="cliente_email_1" value="">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="cliente_email_2" class="form-label">Email 2</label>
+            <input type="email" class="form-control" id="cliente_email_2" value="">
+          </div>
+        </div>
+      </div>
+
+      <!-- Transportista -->
+      <div class="form-section nested-section">
+        <h5>Transportista</h5>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="transportista_documento_tipo" class="form-label">Tipo de Documento</label>
+            <input type="text" class="form-control" id="transportista_documento_tipo" value="6">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="transportista_documento_numero" class="form-label">Número de Documento</label>
+            <input type="text" class="form-control" id="transportista_documento_numero" value="20600695771">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="transportista_denominacion" class="form-label">Denominación</label>
+            <input type="text" class="form-control" id="transportista_denominacion" value="NUBEFACT SA">
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="transportista_placa_numero" class="form-label">Número de Placa</label>
+          <input type="text" class="form-control" id="transportista_placa_numero" value="ABC444">
+        </div>
+      </div>
+
+      <!-- Conductor -->
+      <div class="form-section nested-section">
+        <h5>Conductor</h5>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="conductor_documento_tipo" class="form-label">Tipo de Documento</label>
+            <input type="text" class="form-control" id="conductor_documento_tipo" value="1">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="conductor_documento_numero" class="form-label">Número de Documento</label>
+            <input type="text" class="form-control" id="conductor_documento_numero" value="12345678">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="conductor_numero_licencia" class="form-label">Número de Licencia</label>
+            <input type="text" class="form-control" id="conductor_numero_licencia" value="Q12345678">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="conductor_nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="conductor_nombre" value="JORGE">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="conductor_apellidos" class="form-label">Apellidos</label>
+            <input type="text" class="form-control" id="conductor_apellidos" value="LOPEZ">
+          </div>
+        </div>
+      </div>
+
+      <!-- Punto de Partida -->
+      <div class="form-section nested-section">
+        <h5>Punto de Partida</h5>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="punto_de_partida_ubigeo" class="form-label">Ubigeo</label>
+            <input type="text" class="form-control" id="punto_de_partida_ubigeo" value="150115" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="punto_de_partida_direccion" class="form-label">Dirección</label>
+            <input type="text" class="form-control" id="punto_de_partida_direccion" value="AV. PRINCIPAL 123, MIRAFLORES" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="punto_de_partida_codigo_establecimiento_sunat" class="form-label">Código Establecimiento SUNAT</label>
+            <input type="text" class="form-control" id="punto_de_partida_codigo_establecimiento_sunat" value="0000" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Punto de Llegada -->
+      <div class="form-section nested-section">
+        <h5>Punto de Llegada</h5>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="punto_de_llegada_ubigeo" class="form-label">Ubigeo</label>
+            <input type="text" class="form-control" id="punto_de_llegada_ubigeo" value="130101" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="punto_de_llegada_direccion" class="form-label">Dirección</label>
+            <input type="text" class="form-control" id="punto_de_llegada_direccion" value="CALLE SECUNDARIA 456, CALLAO" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="punto_de_llegada_codigo_establecimiento_sunat" class="form-label">Código Establecimiento SUNAT</label>
+            <input type="text" class="form-control" id="punto_de_llegada_codigo_establecimiento_sunat" value="0000" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vehículos Secundarios -->
+      <div class="form-section">
+        <h5>Vehículos Secundarios</h5>
+        <div id="vehiculos-container">
+          <div class="vehiculo-section">
+            <div class="row">
+              <div class="col-md-12 mb-3">
+                <label for="vehiculo_0_placa_numero" class="form-label">Número de Placa</label>
+                <input type="text" class="form-control" id="vehiculo_0_placa_numero" value="ABC445">
+              </div>
+            </div>
+            <button type="button" class="btn btn-danger remove-btn" onclick="removeVehiculo(this)">Eliminar Vehículo</button>
+          </div>
+          <div class="vehiculo-section">
+            <div class="row">
+              <div class="col-md-12 mb-3">
+                <label for="vehiculo_1_placa_numero" class="form-label">Número de Placa</label>
+                <input type="text" class="form-control" id="vehiculo_1_placa_numero" value="ABC446">
+              </div>
+            </div>
+            <button type="button" class="btn btn-danger remove-btn" onclick="removeVehiculo(this)">Eliminar Vehículo</button>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary mt-2" onclick="addVehiculo()">Agregar Vehículo Secundario</button>
+      </div>
+
+      <!-- Conductores Secundarios -->
+      <div class="form-section">
+        <h5>Conductores Secundarios</h5>
+        <div id="conductores-secundarios-container">
+          <div class="conductor-secundario-section">
+            <div class="row">
+              <div class="col-md-3 mb-3">
+                <label for="conductor_secundario_0_documento_tipo" class="form-label">Tipo de Documento</label>
+                <input type="text" class="form-control" id="conductor_secundario_0_documento_tipo" value="1">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="conductor_secundario_0_documento_numero" class="form-label">Número de Documento</label>
+                <input type="text" class="form-control" id="conductor_secundario_0_documento_numero" value="06123457">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="conductor_secundario_0_nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="conductor_secundario_0_nombre" value="LUIS">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="conductor_secundario_0_apellidos" class="form-label">Apellidos</label>
+                <input type="text" class="form-control" id="conductor_secundario_0_apellidos" value="FERNANDEZ">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="conductor_secundario_0_numero_licencia" class="form-label">Número de Licencia</label>
+              <input type="text" class="form-control" id="conductor_secundario_0_numero_licencia" value="QXXXXXXXZ">
+            </div>
+            <button type="button" class="btn btn-danger remove-btn" onclick="removeConductorSecundario(this)">Eliminar Conductor Secundario</button>
+          </div>
+          <div class="conductor-secundario-section">
+            <div class="row">
+              <div class="col-md-3 mb-3">
+                <label for="conductor_secundario_1_documento_tipo" class="form-label">Tipo de Documento</label>
+                <input type="text" class="form-control" id="conductor_secundario_1_documento_tipo" value="1">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="conductor_secundario_1_documento_numero" class="form-label">Número de Documento</label>
+                <input type="text" class="form-control" id="conductor_secundario_1_documento_numero" value="06123458">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="conductor_secundario_1_nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="conductor_secundario_1_nombre" value="JORGE">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="conductor_secundario_1_apellidos" class="form-label">Apellidos</label>
+                <input type="text" class="form-control" id="conductor_secundario_1_apellidos" value="QUISPE">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="conductor_secundario_1_numero_licencia" class="form-label">Número de Licencia</label>
+              <input type="text" class="form-control" id="conductor_secundario_1_numero_licencia" value="QXXXXXXAZ">
+            </div>
+            <button type="button" class="btn btn-danger remove-btn" onclick="removeConductorSecundario(this)">Eliminar Conductor Secundario</button>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary mt-2" onclick="addConductorSecundario()">Agregar Conductor Secundario</button>
+      </div>
+
+      <!-- Items -->
+      <div class="form-section">
+        <h5>Items</h5>
+        <div id="items-container">
+          <div class="item-section">
+            <div class="row">
+              <div class="col-md-3 mb-3">
+                <label for="item_0_unidad_de_medida" class="form-label">Unidad de Medida</label>
+                <input type="text" class="form-control" id="item_0_unidad_de_medida" value="NIU" required>
+                <div class="invalid-feedback">Este campo es requerido.</div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="item_0_codigo" class="form-label">Código</label>
+                <input type="text" class="form-control" id="item_0_codigo" value="001" required>
+                <div class="invalid-feedback">Este campo es requerido.</div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="item_0_descripcion" class="form-label">Descripción</label>
+                <input type="text" class="form-control" id="item_0_descripcion" value="PRODUCTO DE PRUEBA 1" required>
+                <div class="invalid-feedback">Este campo es requerido.</div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="item_0_cantidad" class="form-label">Cantidad</label>
+                <input type="text" class="form-control" id="item_0_cantidad" value="1" required>
+                <div class="invalid-feedback">Este campo es requerido.</div>
+              </div>
+            </div>
+            <button type="button" class="btn btn-danger remove-btn" onclick="removeItem(this)">Eliminar Item</button>
+          </div>
+          <div class="item-section">
+            <div class="row">
+              <div class="col-md-3 mb-3">
+                <label for="item_1_unidad_de_medida" class="form-label">Unidad de Medida</label>
+                <input type="text" class="form-control" id="item_1_unidad_de_medida" value="NIU" required>
+                <div class="invalid-feedback">Este campo es requerido.</div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="item_1_codigo" class="form-label">Código</label>
+                <input type="text" class="form-control" id="item_1_codigo" value="002" required>
+                <div class="invalid-feedback">Este campo es requerido.</div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="item_1_descripcion" class="form-label">Descripción</label>
+                <input type="text" class="form-control" id="item_1_descripcion" value="PRODUCTO DE PRUEBA 2" required>
+                <div class="invalid-feedback">Este campo es requerido.</div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="item_1_cantidad" class="form-label">Cantidad</label>
+                <input type="text" class="form-control" id="item_1_cantidad" value="2" required>
+                <div class="invalid-feedback">Este campo es requerido.</div>
+              </div>
+            </div>
+            <button type="button" class="btn btn-danger remove-btn" onclick="removeItem(this)">Eliminar Item</button>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary mt-2" onclick="addItem()">Agregar Item</button>
+      </div>
+
+      <!-- Documentos Relacionados -->
+      <div class="form-section">
+        <h5>Documentos Relacionados</h5>
+        <div id="docs-container">
+          <div class="doc-section">
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="doc_0_tipo" class="form-label">Tipo</label>
+                <input type="text" class="form-control" id="doc_0_tipo" value="01">
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="doc_0_serie" class="form-label">Serie</label>
+                <input type="text" class="form-control" id="doc_0_serie" value="FFF1">
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="doc_0_numero" class="form-label">Número</label>
+                <input type="text" class="form-control" id="doc_0_numero" value="1">
+              </div>
+            </div>
+            <button type="button" class="btn btn-danger remove-btn" onclick="removeDoc(this)">Eliminar Documento</button>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary mt-2" onclick="addDoc()">Agregar Documento</button>
+      </div>
+
+      <!-- Buttons -->
+      <div class="form-section">
+        <button type="button" class="btn btn-primary me-2" onclick="generateJson()">Generar JSON</button>
+        <button type="button" class="btn btn-success me-2" onclick="sendGre()">Enviar GRE</button>
+        <button type="button" class="btn btn-info" onclick="consultGre()">Consultar al API</button>
+      </div>
+    </form>
+
+    <!-- Response Alert -->
+    <div id="responseAlert" class="alert d-none mt-3" role="alert"></div>
+  </div>
+
+  <!-- Modal for Consult Response -->
+  <div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="responseModalLabel">Respuesta de Consulta GRE</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <pre id="modalResponse"></pre>
+          <div id="pdfLinkContainer" class="pdf-link"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS and Popper.js -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // API base URL
+    const API_BASE_URL = 'http://localhost:7000';
+
+    // Form validation
+    (function () {
+      'use strict';
+      const form = document.getElementById('greForm');
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        form.classList.add('was-validated');
+      }, false);
+    })();
+
+    // Add Item
+    let itemCount = 2;
+    function addItem() {
+      const container = document.getElementById('items-container');
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'item-section';
+      itemDiv.innerHTML = `
+        <div class="row">
+          <div class="col-md-3 mb-3">
+            <label for="item_${itemCount}_unidad_de_medida" class="form-label">Unidad de Medida</label>
+            <input type="text" class="form-control" id="item_${itemCount}_unidad_de_medida" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="item_${itemCount}_codigo" class="form-label">Código</label>
+            <input type="text" class="form-control" id="item_${itemCount}_codigo" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="item_${itemCount}_descripcion" class="form-label">Descripción</label>
+            <input type="text" class="form-control" id="item_${itemCount}_descripcion" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="item_${itemCount}_cantidad" class="form-label">Cantidad</label>
+            <input type="text" class="form-control" id="item_${itemCount}_cantidad" required>
+            <div class="invalid-feedback">Este campo es requerido.</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-danger remove-btn" onclick="removeItem(this)">Eliminar Item</button>
+      `;
+      container.appendChild(itemDiv);
+      itemCount++;
+    }
+
+    // Remove Item
+    function removeItem(button) {
+      if (document.querySelectorAll('.item-section').length > 1) {
+        button.parentElement.remove();
+      } else {
+        alert('Debe haber al menos un item.');
+      }
+    }
+
+    // Add Documento Relacionado
+    let docCount = 1;
+    function addDoc() {
+      const container = document.getElementById('docs-container');
+      const docDiv = document.createElement('div');
+      docDiv.className = 'doc-section';
+      docDiv.innerHTML = `
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="doc_${docCount}_tipo" class="form-label">Tipo</label>
+            <input type="text" class="form-control" id="doc_${docCount}_tipo">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="doc_${docCount}_serie" class="form-label">Serie</label>
+            <input type="text" class="form-control" id="doc_${docCount}_serie">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="doc_${docCount}_numero" class="form-label">Número</label>
+            <input type="text" class="form-control" id="doc_${docCount}_numero">
+          </div>
+        </div>
+        <button type="button" class="btn btn-danger remove-btn" onclick="removeDoc(this)">Eliminar Documento</button>
+      `;
+      container.appendChild(docDiv);
+      docCount++;
+    }
+
+    // Remove Documento Relacionado
+    function removeDoc(button) {
+      button.parentElement.remove();
+    }
+
+    // Add Vehículo Secundario
+    let vehiculoCount = 2;
+    function addVehiculo() {
+      const container = document.getElementById('vehiculos-container');
+      const vehiculoDiv = document.createElement('div');
+      vehiculoDiv.className = 'vehiculo-section';
+      vehiculoDiv.innerHTML = `
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <label for="vehiculo_${vehiculoCount}_placa_numero" class="form-label">Número de Placa</label>
+            <input type="text" class="form-control" id="vehiculo_${vehiculoCount}_placa_numero">
+          </div>
+        </div>
+        <button type="button" class="btn btn-danger remove-btn" onclick="removeVehiculo(this)">Eliminar Vehículo</button>
+      `;
+      container.appendChild(vehiculoDiv);
+      vehiculoCount++;
+    }
+
+    // Remove Vehículo Secundario
+    function removeVehiculo(button) {
+      button.parentElement.remove();
+    }
+
+    // Add Conductor Secundario
+    let conductorSecundarioCount = 2;
+    function addConductorSecundario() {
+      const container = document.getElementById('conductores-secundarios-container');
+      const conductorDiv = document.createElement('div');
+      conductorDiv.className = 'conductor-secundario-section';
+      conductorDiv.innerHTML = `
+        <div class="row">
+          <div class="col-md-3 mb-3">
+            <label for="conductor_secundario_${conductorSecundarioCount}_documento_tipo" class="form-label">Tipo de Documento</label>
+            <input type="text" class="form-control" id="conductor_secundario_${conductorSecundarioCount}_documento_tipo">
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="conductor_secundario_${conductorSecundarioCount}_documento_numero" class="form-label">Número de Documento</label>
+            <input type="text" class="form-control" id="conductor_secundario_${conductorSecundarioCount}_documento_numero">
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="conductor_secundario_${conductorSecundarioCount}_nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="conductor_secundario_${conductorSecundarioCount}_nombre">
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="conductor_secundario_${conductorSecundarioCount}_apellidos" class="form-label">Apellidos</label>
+            <input type="text" class="form-control" id="conductor_secundario_${conductorSecundarioCount}_apellidos">
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="conductor_secundario_${conductorSecundarioCount}_numero_licencia" class="form-label">Número de Licencia</label>
+          <input type="text" class="form-control" id="conductor_secundario_${conductorSecundarioCount}_numero_licencia">
+        </div>
+        <button type="button" class="btn btn-danger remove-btn" onclick="removeConductorSecundario(this)">Eliminar Conductor Secundario</button>
+      `;
+      container.appendChild(conductorDiv);
+      conductorSecundarioCount++;
+    }
+
+    // Remove Conductor Secundario
+    function removeConductorSecundario(button) {
+      button.parentElement.remove();
+    }
+
+    // Generate JSON
+    async function generateJson() {
+      const form = document.getElementById('greForm');
+      const alertDiv = document.getElementById('responseAlert');
+
+      if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        alertDiv.className = 'alert alert-danger mt-3';
+        alertDiv.textContent = 'Por favor, completa todos los campos requeridos.';
+        alertDiv.classList.remove('d-none');
+        return;
+      }
+
+      // Collect form data in exact order of example JSON
+      const data = {
+        operacion: document.getElementById('operacion').value,
+        tipo_de_comprobante: parseInt(document.getElementById('tipo_de_comprobante').value),
+        serie: document.getElementById('serie').value,
+        numero: parseInt(document.getElementById('numero').value),
+        cliente_tipo_de_documento: parseInt(document.getElementById('cliente_tipo_de_documento').value) || 6,
+        cliente_numero_de_documento: document.getElementById('cliente_numero_de_documento').value,
+        cliente_denominacion: document.getElementById('cliente_denominacion').value,
+        cliente_direccion: document.getElementById('cliente_direccion').value || '',
+        cliente_email: document.getElementById('cliente_email').value || '',
+        cliente_email_1: document.getElementById('cliente_email_1').value || '',
+        cliente_email_2: document.getElementById('cliente_email_2').value || '',
+        fecha_de_emision: document.getElementById('fecha_de_emision').value,
+        observaciones: document.getElementById('observaciones').value || '',
+        motivo_de_traslado: document.getElementById('motivo_de_traslado').value,
+        peso_bruto_total: document.getElementById('peso_bruto_total').value,
+        peso_bruto_unidad_de_medida: document.getElementById('peso_bruto_unidad_de_medida').value,
+        numero_de_bultos: document.getElementById('numero_de_bultos').value,
+        tipo_de_transporte: document.getElementById('tipo_de_transporte').value,
+        fecha_de_inicio_de_traslado: document.getElementById('fecha_de_inicio_de_traslado').value,
+        transportista_documento_tipo: document.getElementById('transportista_documento_tipo').value || '',
+        transportista_documento_numero: document.getElementById('transportista_documento_numero').value || '',
+        transportista_denominacion: document.getElementById('transportista_denominacion').value || '',
+        transportista_placa_numero: document.getElementById('transportista_placa_numero').value || '',
+        conductor_documento_tipo: document.getElementById('conductor_documento_tipo').value || '',
+        conductor_documento_numero: document.getElementById('conductor_documento_numero').value || '',
+        conductor_nombre: document.getElementById('conductor_nombre').value || '',
+        conductor_apellidos: document.getElementById('conductor_apellidos').value || '',
+        conductor_numero_licencia: document.getElementById('conductor_numero_licencia').value || '',
+        punto_de_partida_ubigeo: document.getElementById('punto_de_partida_ubigeo').value,
+        punto_de_partida_direccion: document.getElementById('punto_de_partida_direccion').value,
+        punto_de_partida_codigo_establecimiento_sunat: document.getElementById('punto_de_partida_codigo_establecimiento_sunat').value,
+        punto_de_llegada_ubigeo: document.getElementById('punto_de_llegada_ubigeo').value,
+        punto_de_llegada_direccion: document.getElementById('punto_de_llegada_direccion').value,
+        punto_de_llegada_codigo_establecimiento_sunat: document.getElementById('punto_de_llegada_codigo_establecimiento_sunat').value,
+        enviar_automaticamente_al_cliente: document.getElementById('enviar_automaticamente_al_cliente').value === 'true',
+        formato_de_pdf: document.getElementById('formato_de_pdf').value || '',
+        items: [],
+        documento_relacionado: [],
+        vehiculos_secundarios: [],
+        conductores_secundarios: []
+      };
+
+      // Collect items in exact order
+      document.querySelectorAll('.item-section').forEach((item, index) => {
+        data.items.push({
+          unidad_de_medida: document.getElementById(`item_${index}_unidad_de_medida`).value,
+          codigo: document.getElementById(`item_${index}_codigo`).value,
+          descripcion: document.getElementById(`item_${index}_descripcion`).value,
+          cantidad: document.getElementById(`item_${index}_cantidad`).value
+        });
+      });
+
+      // Collect documentos relacionados in exact order
+      document.querySelectorAll('.doc-section').forEach((doc, index) => {
+        data.documento_relacionado.push({
+          tipo: document.getElementById(`doc_${index}_tipo`).value || '',
+          serie: document.getElementById(`doc_${index}_serie`).value || '',
+          numero: document.getElementById(`doc_${index}_numero`).value || ''
+        });
+      });
+
+      // Collect vehículos secundarios
+      document.querySelectorAll('.vehiculo-section').forEach((vehiculo, index) => {
+        data.vehiculos_secundarios.push({
+          placa_numero: document.getElementById(`vehiculo_${index}_placa_numero`).value || ''
+        });
+      });
+
+      // Collect conductores secundarios
+      document.querySelectorAll('.conductor-secundario-section').forEach((conductor, index) => {
+        data.conductores_secundarios.push({
+          documento_tipo: document.getElementById(`conductor_secundario_${index}_documento_tipo`).value || '',
+          documento_numero: document.getElementById(`conductor_secundario_${index}_documento_numero`).value || '',
+          nombre: document.getElementById(`conductor_secundario_${index}_nombre`).value || '',
+          apellidos: document.getElementById(`conductor_secundario_${index}_apellidos`).value || '',
+          numero_licencia: document.getElementById(`conductor_secundario_${index}_numero_licencia`).value || ''
+        });
+      });
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/generar-json-gre`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        alertDiv.className = `alert ${response.ok ? 'alert-success' : 'alert-danger'} mt-3`;
+        alertDiv.textContent = response.ok ? result.message : `${result.error}: ${result.details}`;
+        alertDiv.classList.remove('d-none');
+      } catch (error) {
+        alertDiv.className = 'alert alert-danger mt-3';
+        alertDiv.textContent = `Error en la solicitud: ${error.message}`;
+        alertDiv.classList.remove('d-none');
+      }
+    }
+
+    // Send GRE to API
+    async function sendGre() {
+      const serie = document.getElementById('serie').value;
+      const numero = document.getElementById('numero').value;
+      const alertDiv = document.getElementById('responseAlert');
+
+      if (!serie || !numero) {
+        alertDiv.className = 'alert alert-danger mt-3';
+        alertDiv.textContent = 'Faltan campos requeridos: serie y numero';
+        alertDiv.classList.remove('d-none');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/generar-gre`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ serie, numero })
+        });
+        const result = await response.json();
+        alertDiv.className = `alert ${response.ok ? 'alert-success' : 'alert-danger'} mt-3`;
+        alertDiv.textContent = response.ok ? result.message : `${result.error}: ${result.details}`;
+        alertDiv.classList.remove('d-none');
+      } catch (error) {
+        alertDiv.className = 'alert alert-danger mt-3';
+        alertDiv.textContent = `Error en la solicitud: ${error.message}`;
+        alertDiv.classList.remove('d-none');
+      }
+    }
+
+    // Consult GRE
+    async function consultGre() {
+      const serie = document.getElementById('serie').value;
+      const numero = document.getElementById('numero').value;
+      const alertDiv = document.getElementById('responseAlert');
+      const modalResponse = document.getElementById('modalResponse');
+      const pdfLinkContainer = document.getElementById('pdfLinkContainer');
+
+      if (!serie || !numero) {
+        alertDiv.className = 'alert alert-danger mt-3';
+        alertDiv.textContent = 'Faltan campos requeridos: serie y numero';
+        alertDiv.classList.remove('d-none');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/consultar-gre`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ serie, numero })
+        });
+        const result = await response.json();
+
+        if (response.ok) {
+          modalResponse.textContent = JSON.stringify(result, null, 2);
+          pdfLinkContainer.innerHTML = result.data?.enlace_del_pdf
+            ? `<a href="${result.data.enlace_del_pdf}" class="btn btn-primary" target="_blank">Descargar PDF</a>`
+            : '<p>No se encontró enlace del PDF.</p>';
+          const modal = new bootstrap.Modal(document.getElementById('responseModal'));
+          modal.show();
+          alertDiv.classList.add('d-none');
+        } else {
+          alertDiv.className = 'alert alert-danger mt-3';
+          alertDiv.textContent = `${result.error}: ${result.details}`;
+          alertDiv.classList.remove('d-none');
+        }
+      } catch (error) {
+        alertDiv.className = 'alert alert-danger mt-3';
+        alertDiv.textContent = `Error en la solicitud: ${error.message}`;
+        alertDiv.classList.remove('d-none');
+      }
+    }
+  </script>
+</body>
+</html>

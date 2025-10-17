@@ -5,14 +5,21 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev" : "nodemon src/server.js",
-    "start" : "node src/server.js"
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js"
+  },
+    "nodemonConfig": {
+    "ignore": [
+      "public/*",
+      "data/*.json"
+    ]
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.12.2",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "nodemon": "^3.1.10"
